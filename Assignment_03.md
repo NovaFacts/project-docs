@@ -7,3 +7,15 @@ Cuento con una buena base en programación orientada a objetos y en la organizac
 
 Aspectos a mejorar.
 Debo profundizar en patrones de diseño y en arquitectura de software a mayor escala, así como fortalecer mis conocimientos en bases de datos y persistencia. También quiero mejorar en pruebas automatizadas y adquirir mayor experiencia trabajando con metodologías ágiles y en entornos colaborativos.
+
+### Laura Valentina Hernández Torres
+
+**Rol que me gustaría tener en un equipo de software**  
+Me gustaría desempeñar un rol orientado a la organización del equipo, la comunicación y el diseño visual. Me interesa facilitar el trabajo en equipo, ayudar a coordinar tareas y aportar en la parte estética y visual de los proyectos.
+
+**Fortalezas que puedo aportar**  
+Considero que tengo buenas habilidades para el trabajo en equipo, la comunicación y la organización. Se me da bien motivar a las personas, escuchar ideas y ayudar a que el grupo avance. Además, tengo buen criterio visual y estético, lo cual puede aportar al diseño de interfaces, presentaciones y documentación.
+
+**Aspectos por mejorar**  
+Creo que debo fortalecer mis habilidades técnicas relacionadas con el desarrollo de software y mejorar la gestión del tiempo en proyectos largos. También quiero aprender a dar feedback más técnico y a tomar decisiones con mayor seguridad.
+<!-- Aporte de lahernandezt -->
