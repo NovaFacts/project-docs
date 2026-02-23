@@ -24,7 +24,7 @@ Me gustaría desempeñar un rol orientado a la organización del equipo, la comu
 Considero que tengo buenas habilidades para el trabajo en equipo, la comunicación y la organización. Se me da bien motivar a las personas, escuchar ideas y ayudar a que el grupo avance. Además, tengo buen criterio visual y estético, lo cual puede aportar al diseño de interfaces, presentaciones y documentación.
 
 **Aspectos por mejorar**  
-Creo que debo fortalecer mis habilidades técnicas relacionadas con el desarrollo de software y mejorar la gestión del tiempo en proyectos largos. También quiero aprender a dar feedback más técnico y a tomar decisiones con mayor seguridad.
+Creo que debo fortalecer mis habilidades técnicas relacionadas con el desarrollo de software y mejorar la gestión del tiempo en proyectos largos. También quiero aprender a dar feedback más técnico y a tomar decisiones con mayor seguridad. :c
 
 # **Pregunta 2 – Compromisos del grupo**
 
