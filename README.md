@@ -69,5 +69,4 @@ para el desarrollo de un software a medida enfocado en la gestión financiera y 
 
 ## 🏷️ Logo del Proyecto 
 
-```markdown
-![Logo NovaFacts](project-docs/img/Gemini_Generated_Image_n6p8dsn6p8dsn6p8.png)
+![Logo NovaFacts](img/Gemini_Generated_Image_n6p8dsn6p8dsn6p8.png)
