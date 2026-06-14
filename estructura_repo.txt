@@ -1,0 +1,33 @@
+.
+├── assignments
+│   ├── Assignment_02.pdf
+│   ├── Assignment_03.md
+│   └── Assignment_04.pdf
+├── Documentation
+│   ├── Diagrams
+│   │   ├── Database.png
+│   │   └── Diagram_CU.png
+│   ├── project
+│   │   ├── Hola_mundo.pdf
+│   │   ├── Submission_01.pdf
+│   │   ├── Submission_02 .pdf
+│   │   └── Submission_03.pdf
+│   └── use_cases
+│       ├── CU_01_ jfoglia.pdf
+│       ├── CU_01_ sacubides.pdf
+│       ├── CU_01_eostos.pdf
+│       ├── CU_02_eostos.pdf
+│       ├── CU_02_jfoglia.pdf
+│       ├── CU_02_sacubides.pdf
+│       ├── CU_03_eostos.pdf
+│       ├── CU_03_sacubides.pdf
+│       ├── CU_07-lahernandezt.pdf
+│       ├── CU_08-lahernandezt.pdf
+│       ├── CU_09-lahernandezt.pdf
+│       └── CU_O3_jfoglia.pdf
+├── estructura_repo.txt
+├── img
+│   └── Gemini_Generated_Image_n6p8dsn6p8dsn6p8.png
+└── README.md
+
+7 directories, 24 files
