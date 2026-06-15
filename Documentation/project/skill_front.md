@@ -1,13 +1,15 @@
-# 🎨 Skill Review — Frontend
-### Proyecto NovaFacts · Vue 3 + Vite + Vue Router + Axios
+# Skill Review — Frontend  
+### Proyecto NovaFacts · Vue 3 + Vite + Vue Router + Axios  
 **Curso:** Ingeniería de Software 1 (2016701) — Universidad Nacional de Colombia  
-**Fecha:** Junio 2025
+**Fecha:** Junio 2025  
 
 ---
 
 ## 1. Descripción de la Arquitectura
 
-El frontend es una SPA (Single Page Application) construida con Vue 3 usando la Composition API (`<script setup>`). La navegación es manejada por Vue Router y las llamadas HTTP se centralizan en una capa de servicios.
+El frontend es una SPA (Single Page Application) construida con Vue 3 usando la Composition API (`<script setup>`). La navegación se maneja con Vue Router y las llamadas HTTP se centralizan en una capa de servicios.
+
+
 
 ```
 frontend/src
@@ -56,77 +58,84 @@ Usuario
 
 ---
 
+**Dependencias principales:**  
+- Vue 3 (Composition API)  
+- Vite 8  
+- Vue Router 5  
+- Axios 1.x  
+- JavaScript (ES Modules)  
+
+**Flujo de datos:**  
+Usuario → LoginForm.vue → authService.js → Backend → LoginView.vue → SecretView.vue → SecretDisplay.vue  
+
+---
+
 ## 2. Buenas Prácticas de Desarrollo — Vue 3 / JavaScript
 
-### ✅ MUST HAVE (obligatorio)
+### Obligatorio (MUST HAVE)
 
-| # | Regla | ¿Se cumple? | Evidencia / Observación |
+| # | Regla | Cumplimiento | Evidencia |
 |---|---|:---:|---|
-| M1 | **Composition API con `<script setup>`** (patrón recomendado en Vue 3) | ✅ | Todos los componentes usan `<script setup>` |
-| M2 | **Separación Views / Components** — las Views orquestan, los Components son UI | ✅ | `LoginView` maneja navegación; `LoginForm` solo maneja su estado interno y emite eventos |
-| M3 | **Comunicación por props y emits** — no acceso directo al estado del padre | ✅ | `LoginForm` emite `login-success`; `SecretDisplay` emite `logout` |
-| M4 | **Capa de servicios HTTP separada** — no llamar Axios directamente en los componentes | ✅ | `authService.js` centraliza toda la comunicación con el backend |
-| M5 | **Estado reactivo con `ref()`** para datos que cambian en el template | ✅ | `correo`, `password`, `loading`, `errorMessage`, `secretPhrase` son todos `ref()` |
-| M6 | **`v-model`** para binding bidireccional en inputs de formulario | ✅ | Usado en ambos campos del `LoginForm` |
-| M7 | **`@submit.prevent`** para evitar recarga de página en formularios | ✅ | `<form @submit.prevent="handleSubmit">` |
-| M8 | **Nombres de componentes en PascalCase** | ✅ | `LoginForm`, `SecretDisplay`, `LoginView`, `SecretView` |
-| M9 | **`defineEmits`** declarado explícitamente en el componente | ✅ | `const emit = defineEmits(['login-success'])` en `LoginForm` |
-| M10 | **Manejo de errores en llamadas HTTP** con try/catch | ✅ | `authService.js` captura errores de red y de respuesta por separado |
+| M1 | Uso de Composition API con `<script setup>` | Sí | Todos los componentes lo usan |
+| M2 | Separación Views / Components | Sí | `LoginView` orquesta, `LoginForm` solo UI |
+| M3 | Comunicación por props y emits | Sí | `LoginForm` emite `login-success` |
+| M4 | Capa de servicios HTTP separada | Sí | `authService.js` centraliza Axios |
+| M5 | Estado reactivo con `ref()` | Sí | Variables como `correo`, `password`, `loading` |
+| M6 | Uso de `v-model` en inputs | Sí | Binding en formulario |
+| M7 | `@submit.prevent` en formularios | Sí | Evita recarga |
+| M8 | Nombres de componentes en PascalCase | Sí | `LoginForm`, `SecretDisplay` |
+| M9 | `defineEmits` explícito | Sí | Declarado en `LoginForm` |
+| M10 | Manejo de errores HTTP con try/catch | Sí | Implementado en `authService.js` |
 
-### 🟡 SHOULD HAVE (recomendado)
+### Recomendado (SHOULD HAVE)
 
-| # | Regla | ¿Se cumple? | Observación / Mejora sugerida |
+| # | Regla | Cumplimiento | Observación |
 |---|---|:---:|---|
-| S1 | **Protección de rutas con Navigation Guards** (`router.beforeEach`) | ⚠️ No | `SecretView` hace su propia redirección en `onMounted`, lo cual tiene un "flash" visual antes de redirigir; un guard en el router sería más robusto |
-| S2 | **Comentarios JSDoc en funciones de los servicios** | ⚠️ Parcial | `authService.js` tiene comentarios en línea útiles pero no JSDoc formal; `LoginView` sí documenta `handleLoginSuccess` correctamente con `@param` |
-| S3 | **Variables de entorno con `import.meta.env`** para la URL base de la API | ⚠️ No | La URL `http://localhost:8000/api` está hardcodeada en `authService.js`; debería ser `import.meta.env.VITE_API_URL` |
-| S4 | **`scoped` en todos los estilos** de los componentes | ✅ | Todos los componentes tienen `<style scoped>` |
-| S5 | **Feedback visual durante la carga** (estado `loading`) | ✅ | El botón muestra "Ingresando..." y se deshabilita mientras espera |
-| S6 | **Consistencia en el idioma del código** (variables en inglés) | ⚠️ Parcial | La mayoría está en inglés (`loading`, `password`, `router`), pero `correo` mezcla español; se recomienda uniformidad: `email` o `correo` en todo |
-| S7 | **`key` en listas renderizadas con `v-for`** | ➖ N/A | No hay listas en el proyecto actualmente |
+| S1 | Guards en router para rutas protegidas | No | Protección en componente, no en router |
+| S2 | Comentarios JSDoc en servicios | Parcial | Comentarios útiles pero no formales |
+| S3 | Variables de entorno para API | No | URL hardcodeada en `authService.js` |
+| S4 | Estilos `scoped` en componentes | Sí | Todos los componentes lo usan |
+| S5 | Feedback visual en carga | Sí | Botón muestra "Ingresando..." |
+| S6 | Consistencia en idioma del código | Parcial | Mezcla inglés/español (`correo`, `loading`) |
+| S7 | `key` en listas con `v-for` | N/A | No hay listas |
 
 ---
 
 ## 3. Buenas Prácticas de Arquitectura
 
-### ✅ MUST HAVE
+### Obligatorio
 
-| # | Regla | ¿Se cumple? | Evidencia |
+| # | Regla | Cumplimiento | Evidencia |
 |---|---|:---:|---|
-| A1 | **SPA con enrutamiento del lado del cliente** (Vue Router) | ✅ | `router/index.js` con `createWebHistory` |
-| A2 | **Separación de responsabilidades** Views ↔ Components ↔ Services | ✅ | Cada carpeta tiene un rol claro y no se mezclan responsabilidades |
-| A3 | **`App.vue` como shell mínimo** — sin lógica de negocio | ✅ | `App.vue` solo contiene `<router-view />` y un reset de estilos global |
-| A4 | **`main.js` limpio** — solo registra plugins y monta la app | ✅ | Registro de router y mount, sin más |
-| A5 | **Instancia de Axios centralizada** con `baseURL` y headers por defecto | ✅ | `apiClient` en `authService.js` evita repetir configuración |
+| A1 | SPA con Vue Router | Sí | `router/index.js` con `createWebHistory` |
+| A2 | Separación Views / Components / Services | Sí | Carpetas bien definidas |
+| A3 | `App.vue` como shell mínimo | Sí | Solo `<router-view />` |
+| A4 | `main.js` limpio | Sí | Solo registra router y monta app |
+| A5 | Instancia Axios centralizada | Sí | `apiClient` en `authService.js` |
 
-### 🟡 SHOULD HAVE
+### Recomendado
 
-| # | Regla | ¿Se cumple? | Observación |
+| # | Regla | Cumplimiento | Observación |
 |---|---|:---:|---|
-| AR1 | **Variables de entorno para configuración por ambiente** (dev vs prod) | ⚠️ No | Sin `.env` ni `.env.production`; la URL de la API es fija |
-| AR2 | **Estado global con Pinia o Vuex** si hay datos compartidos entre rutas | ⚠️ Pendiente | Hoy la `secretPhrase` pasa por query params (frágil); si el proyecto crece, un store evitaría URL manipulation |
-| AR3 | **Guarda de navegación en el router** para rutas protegidas | ⚠️ No | Ver S1; actualmente la protección está en el componente, no en el router |
-| AR4 | **`name` en todas las rutas** del router para usar `router.push({ name: '...' })` | ✅ | Las rutas tienen `name: 'login'` y `name: 'secret'` |
+| AR1 | Variables de entorno para ambientes | No | Sin `.env` configurado |
+| AR2 | Estado global con Pinia/Vuex | Pendiente | `secretPhrase` pasa por query params |
+| AR3 | Guards en router | No | Ver S1 |
+| AR4 | `name` en rutas | Sí | Definidos en router |
 
 ---
 
 ## 4. Código Limpio
 
-| Principio | ¿Se aplica? | Nota |
-|---|:---:|---|
-| Nombres descriptivos (componentes, funciones, variables) | ✅ | `handleLoginSuccess`, `handleSubmit`, `handleLogout` son autoexplicativos |
-| Componentes con una sola responsabilidad | ✅ | `LoginForm` solo gestiona el formulario; `LoginView` solo gestiona la navegación |
-| Sin CSS global innecesario | ✅ | `style.css` solo contiene el reset; cada componente tiene su `<style scoped>` |
-| Comentarios útiles (no redundantes) | ✅ | Los comentarios explican el **por qué**, no el qué (ej. "El ':' indica un parámetro dinámico") |
-| Sin `console.log` de debug en producción | ✅ | No se encontraron `console.log` en el código |
+- Nombres descriptivos: Sí  
+- Componentes con una sola responsabilidad: Sí  
+- Sin CSS global innecesario: Sí  
+- Comentarios útiles: Sí  
+- Sin `console.log` en producción: Sí  
 
 ---
 
 ## 5. Resumen de Cumplimiento
 
-```
-MUST HAVE   ████████████████████  10/10 ✅  (100%)
-SHOULD HAVE ████████████░░░░░░░░   5/8  ⚠️  (63%)
-```
+- MUST HAVE: 10/10 (100%)  
+- SHOULD HAVE: 5/8 (63%)  
 
-> 💡 **Prioridad de mejora:** Mover la URL de la API a una variable de entorno (`VITE_API_URL`), implementar un Navigation Guard en el router para proteger `/secret`, y uniformizar el idioma de las variables (`correo` → `email`).
