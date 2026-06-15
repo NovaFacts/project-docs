@@ -1,13 +1,14 @@
-# 🛠️ Skill Review — Backend
-### Proyecto NovaFacts · Spring Boot 3.5 + Java 21 + PostgreSQL
+# Skill Review — Backend  
+### Proyecto NovaFacts · Spring Boot 3.5 + Java 21 + PostgreSQL  
 **Curso:** Ingeniería de Software 1 (2016701) — Universidad Nacional de Colombia  
-**Fecha:** Junio 2025
+**Fecha:** Junio 2025  
 
 ---
 
 ## 1. Descripción de la Arquitectura
 
-El backend sigue una arquitectura en capas clásica de Spring Boot, organizada por **feature packages** (en lugar de por tipo técnico). La única feature actual es `auth`, que agrupa todo lo relacionado con autenticación y gestión de usuarios.
+El backend está organizado en capas siguiendo el modelo clásico de Spring Boot, pero agrupando por funcionalidades (feature packages). Por ahora solo existe la funcionalidad de `auth`, que concentra todo lo relacionado con autenticación y gestión de usuarios.
+
 
 ```
 com.novafacts.backend
@@ -33,99 +34,85 @@ com.novafacts.backend
         └── LoginResponse.java
 ```
 
-**Dependencias principales:**
+**Dependencias principales:**  
+- Spring Boot 3.5  
+- Java 21  
+- Spring Data JPA + PostgreSQL  
+- Spring Security + BCrypt  
+- Maven  
+- Lombok  
 
-| Capa | Tecnología |
-|---|---|
-| Framework | Spring Boot 3.5 |
-| Lenguaje | Java 21 |
-| Persistencia | Spring Data JPA + PostgreSQL |
-| Seguridad | Spring Security + BCrypt |
-| Build | Maven |
-| Utilidades | Lombok |
-
-**Flujo de una petición típica:**
-```
-Cliente HTTP
-    └─► Controller  (recibe y valida forma del request)
-            └─► Service  (lógica de negocio, reglas)
-                    └─► Repository  (acceso a BD)
-                            └─► PostgreSQL
-```
+**Flujo de una petición típica:**  
+Cliente HTTP → Controller → Service → Repository → PostgreSQL  
 
 ---
 
 ## 2. Buenas Prácticas de Desarrollo — Java / Spring Boot
 
-### ✅ MUST HAVE (obligatorio)
+### Obligatorio (MUST HAVE)
 
-| # | Regla | ¿Se cumple? | Evidencia / Observación |
+| # | Regla | Cumplimiento | Evidencia |
 |---|---|:---:|---|
-| M1 | **Inyección de dependencias por constructor** (no por campo `@Autowired`) | ✅ | `AuthController`, `UserService` usan constructor explícito |
-| M2 | **DTOs separados de las entidades** — nunca exponer la entidad JPA directamente | ✅ | `CreateUserRequest`, `UserResponse`, `LoginRequest`, `LoginResponse` |
-| M3 | **Contraseñas hasheadas** — nunca guardar texto plano | ✅ | `BCryptPasswordEncoder` configurado en `SecurityConfig` y usado en `UserService` |
-| M4 | **Capas separadas** Controller → Service → Repository | ✅ | Separación clara; el Controller no accede al Repository directamente |
-| M5 | **Nombre de clases en PascalCase**, métodos y variables en camelCase | ✅ | Convención Java respetada en todo el código |
-| M6 | **Manejo de Optional** al buscar por ID o campo único | ✅ | `UserRepository.findByUsername()` retorna `Optional<User>` |
-| M7 | **Anotaciones de capa correctas** (`@RestController`, `@Service`, `@Repository`) | ✅ | Correctamente anotadas |
-| M8 | **`@RequestMapping` en el controller** para definir la URL base del recurso | ✅ | `/api/auth` y `/api/users` correctamente definidos |
-| M9 | **Sin lógica de negocio en el Controller** | ✅ | El Controller solo delega al Service |
-| M10 | **Sin SQL manual** — usar Spring Data / JPA | ✅ | Solo se usa `JpaRepository` y query method derivado |
+| M1 | Inyección de dependencias por constructor | Sí | `AuthController`, `UserService` |
+| M2 | DTOs separados de entidades | Sí | `CreateUserRequest`, `UserResponse`, etc. |
+| M3 | Contraseñas hasheadas | Sí | BCrypt en `SecurityConfig` y `UserService` |
+| M4 | Capas separadas | Sí | Controller → Service → Repository |
+| M5 | Convenciones de nombres | Sí | PascalCase y camelCase |
+| M6 | Uso de Optional | Sí | `findByUsername()` retorna `Optional<User>` |
+| M7 | Anotaciones correctas | Sí | `@RestController`, `@Service`, `@Repository` |
+| M8 | `@RequestMapping` en controllers | Sí | `/api/auth`, `/api/users` |
+| M9 | Sin lógica en Controller | Sí | Solo delega al Service |
+| M10 | Sin SQL manual | Sí | Solo `JpaRepository` |
 
-### 🟡 SHOULD HAVE (recomendado)
+### Recomendado (SHOULD HAVE)
 
-| # | Regla | ¿Se cumple? | Observación / Mejora sugerida |
+| # | Regla | Cumplimiento | Observación |
 |---|---|:---:|---|
-| S1 | **Manejo de excepciones centralizado** con `@ControllerAdvice` | ⚠️ No | `UserService` lanza `RuntimeException` genérica; falta una clase `GlobalExceptionHandler` que devuelva respuestas HTTP con código apropiado (401, 404…) |
-| S2 | **Validación de entrada** con `@Valid` y Bean Validation (`@NotBlank`, `@Size`) | ⚠️ No | `CreateUserRequest` y `LoginRequest` no tienen restricciones; un campo vacío llegaría al Service sin control |
-| S3 | **Lombok en entidades y DTOs** para reducir boilerplate | ⚠️ Parcial | Lombok está en el `pom.xml` pero `User.java` y los DTOs escriben getters/setters manualmente; se podría usar `@Data`, `@Getter`, `@AllArgsConstructor` |
-| S4 | **Configuración externalizada** en `application.properties` sin credenciales en código | ✅ | URL y credenciales de BD se leen de variables de entorno |
-| S5 | **Nombre del artefacto y descripción en `pom.xml`** | ⚠️ No | Los campos `<name/>` y `<description/>` están vacíos |
-| S6 | **CSRF deshabilitado justificado** (solo válido en APIs stateless con tokens) | ⚠️ Pendiente | CSRF está deshabilitado pero aún no hay JWT implementado; debe justificarse en comentario o implementar autenticación stateless |
-| S7 | **Javadoc en métodos públicos de Service** | ⚠️ No | `UserService` no tiene ningún comentario que describa qué hace cada método |
+| S1 | Manejo de excepciones centralizado | No | Falta `GlobalExceptionHandler` |
+| S2 | Validación de entrada con `@Valid` | No | DTOs sin restricciones |
+| S3 | Uso de Lombok en entidades/DTOs | Parcial | Getters/setters escritos a mano |
+| S4 | Configuración externalizada | Sí | BD desde variables de entorno |
+| S5 | Artefacto y descripción en `pom.xml` | No | Campos vacíos |
+| S6 | CSRF deshabilitado justificado | Pendiente | No hay JWT aún |
+| S7 | Javadoc en métodos públicos | No | `UserService` sin comentarios |
 
 ---
 
 ## 3. Buenas Prácticas de Arquitectura
 
-### ✅ MUST HAVE
+### Obligatorio
 
-| # | Regla | ¿Se cumple? | Evidencia |
+| # | Regla | Cumplimiento | Evidencia |
 |---|---|:---:|---|
-| A1 | **Separación por capas** (Controller / Service / Repository / Entity / DTO) | ✅ | Estructura de paquetes lo refleja claramente |
-| A2 | **Feature-based packaging** (agrupar por dominio, no por tipo técnico) | ✅ | Todo `auth/` agrupa controller + service + repo + entity + dto |
-| A3 | **El Repository no contiene lógica de negocio** | ✅ | `UserRepository` solo extiende `JpaRepository` y declara un query method |
-| A4 | **El Service es el único punto de acceso al Repository** | ✅ | Ningún Controller inyecta directamente el Repository |
-| A5 | **Configuración de seguridad separada** en clase propia | ✅ | `SecurityConfig.java` aislada en `config/` |
+| A1 | Separación por capas | Sí | Paquetes reflejan la estructura |
+| A2 | Feature-based packaging | Sí | `auth/` agrupa todo |
+| A3 | Repository sin lógica | Sí | Solo extiende `JpaRepository` |
+| A4 | Service como único acceso al Repository | Sí | Controllers no inyectan repos |
+| A5 | Configuración de seguridad separada | Sí | `SecurityConfig.java` en `config/` |
 
-### 🟡 SHOULD HAVE
+### Recomendado
 
-| # | Regla | ¿Se cumple? | Observación |
+| # | Regla | Cumplimiento | Observación |
 |---|---|:---:|---|
-| AR1 | **Manejo de errores HTTP semántico** (400, 401, 404, 500) | ⚠️ No | Actualmente todos los errores devuelven 500; falta `@ControllerAdvice` |
-| AR2 | **Autenticación stateless con JWT** coherente con la desactivación de CSRF | ⚠️ Pendiente | `LoginResponse` retorna un mensaje de texto, no un token; el flujo de seguridad queda incompleto |
-| AR3 | **Archivos de configuración duplicados eliminados** | ⚠️ No | Existe `com.novafacts.SecurityConfig` (raíz) Y `com.novafacts.backend.config.SecurityConfig`; el primero es un residuo que debería borrarse |
-| AR4 | **`TestController` y `HelloController` eliminados en producción** | ⚠️ No | Hay dos controllers de prueba en el source principal; no deberían estar en `main/`, solo en `test/` |
+| AR1 | Manejo de errores HTTP semántico | No | Todos devuelven 500 |
+| AR2 | Autenticación stateless con JWT | Pendiente | `LoginResponse` no devuelve token |
+| AR3 | Config duplicada eliminada | No | Dos `SecurityConfig` en el proyecto |
+| AR4 | Controllers de prueba eliminados | No | `TestController` y `HelloController` siguen en `main/` |
 
 ---
 
 ## 4. Código Limpio
 
-| Principio | ¿Se aplica? | Nota |
-|---|:---:|---|
-| Nombres descriptivos (clases, métodos, variables) | ✅ | `handleLoginSuccess`, `createUser`, `getUsers` son autoexplicativos |
-| Métodos cortos y con una sola responsabilidad | ✅ | Ningún método supera 20 líneas |
-| Sin código comentado ni dead code en producción | ⚠️ | `TestController.java` y `SecurityConfig` duplicado son dead code |
-| Sin números mágicos o strings literales sueltos | ✅ | Rutas definidas en `@RequestMapping`, no hardcodeadas en lógica |
-| Una clase = una responsabilidad (SRP) | ✅ | Cada clase tiene un rol claro y delimitado |
+- Nombres descriptivos: Sí  
+- Métodos cortos y con una sola responsabilidad: Sí  
+- Sin código comentado ni duplicado: No (controllers de prueba y config duplicada)  
+- Sin números mágicos: Sí  
+- Una clase = una responsabilidad: Sí  
 
 ---
 
 ## 5. Resumen de Cumplimiento
 
-```
-MUST HAVE   ██████████████████░░  10/10 ✅  (100%)
-SHOULD HAVE ████████░░░░░░░░░░░░   3/7  ⚠️  (43%)
-```
+- MUST HAVE: 10/10 (100%)  
+- SHOULD HAVE: 3/7 (43%)  
 
-> 💡 **Prioridad de mejora:** Implementar `@ControllerAdvice` para manejo de errores, agregar `@Valid` en los DTOs de entrada, y eliminar los archivos residuales (`SecurityConfig` duplicado, `TestController`, `HelloController`).
