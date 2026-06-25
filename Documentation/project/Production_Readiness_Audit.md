@@ -117,25 +117,43 @@ Use the container's internal port (5432) for the inter-service connection string
 
 **Repository:** project-backend
 **Files:** `src/main/resources/application.properties`, `docker-compose.yml`
-**Severity:** Critical
+**Severity:** Critical → **RESOLVED**
 **Confidence:** High
 
-### Problem
-The Postgres password (`Epsilon_Delta.0`) is hardcoded in plaintext in two files, both tracked by git, present across multiple commits (`cf00cf6`, `715e381`).
+### Problem (Historical)
+The Postgres password was hardcoded in plaintext in two files, both tracked by git.
 
-### Evidence
+### Resolution
+Credentials are now fully externalized via environment variables. No secret value is committed to version control.
+
+`application.properties` (current):
+```properties
+spring.datasource.username=${POSTGRES_USER:postgres}
+spring.datasource.password=${POSTGRES_PASSWORD}
 ```
-application.properties:5   spring.datasource.password=Epsilon_Delta.0
-docker-compose.yml:11      POSTGRES_PASSWORD: Epsilon_Delta.0
-docker-compose.yml:32      SPRING_DATASOURCE_PASSWORD=Epsilon_Delta.0
+
+`docker-compose.yml` (current):
+```yaml
+# postgres_db service
+POSTGRES_USER: ${POSTGRES_USER:-postgres}
+POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+# spring_app service
+- SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+- SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
 ```
-This directly contradicts the project's own self-audit (`project-docs/Documentation/project/skill_back.md`, row S4: "Configuración externalizada: Sí | BD desde variables de entorno") — the *values* are externalized into env vars in `docker-compose.yml`, but the secret value itself is still hardcoded plaintext in a committed file, and `application.properties` has no indirection at all.
 
-### Impact
-Anyone with read access to either git repo has the database password. If this password is ever reused for a real deployment (a common shortcut under deadline pressure), it's an immediate compromise vector. Rotating it requires a commit + history consideration.
+A `.env.example` template is committed at `project-backend/.env.example`.
+The real `.env` file (containing actual credentials) is listed in `.gitignore` and is never committed.
 
-### Recommended Resolution
-Move secrets to environment variables / a secrets manager, never commit actual values, and rotate the currently-exposed password before any real deployment.
+### Manual step required
+Developers must create their own `.env` file before running the stack:
+```bash
+cd project-backend
+cp .env.example .env
+# edit .env and set POSTGRES_PASSWORD to a real value
+docker compose up -d
+```
 
 ---
 
