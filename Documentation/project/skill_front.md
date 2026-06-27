@@ -19,18 +19,18 @@ frontend/src
 ├── style.css                ← Reset y estilos globales
 │
 ├── router/
-│   └── index.js             ← Definición de rutas: / (login) y /secret/:phrase?
+│   └── index.js             ← Definición de rutas: / (login), /dashboard
 │
 ├── services/
-│   └── authService.js       ← Capa HTTP: instancia Axios + función login()
+│   ├── api.ts               ← Instancia Axios centralizada + interceptor Bearer token
+│   └── authService.ts       ← authenticateUser(), logout(); manejo de JWT en localStorage
 │
-├── views/                   ← Páginas completas (una por ruta)
-│   ├── LoginView.vue        ← Contenedor de la vista login, maneja navegación
-│   └── SecretView.vue       ← Muestra la frase secreta, protege acceso directo
+├── types/
+│   └── auth.ts              ← Tipos TypeScript: LoginCredentials, AuthResult
 │
-└── components/              ← Componentes reutilizables (UI puro)
-    ├── LoginForm.vue        ← Formulario de login con validación y estado de carga
-    └── SecretDisplay.vue    ← Visualización de la frase + botón logout
+└── views/                   ← Páginas completas (una por ruta)
+    ├── LoginView.vue        ← Vista de login; redirige a /dashboard en éxito
+    └── DashboardView.vue    ← Panel principal (placeholder)
 ```
 
 **Dependencias principales:**
@@ -47,13 +47,11 @@ frontend/src
 
 ```
 Usuario
-  └─► LoginForm.vue  (estado local: correo, password, loading, errorMessage)
-          └─► authService.js  (llama a POST /api/login/)
+  └─► LoginView.vue  (estado local: userEmail, userPassword, isSubmitting, errorMessage)
+          └─► authService.ts  (llama a POST /api/auth/login, almacena JWT)
                   └─► Backend Spring Boot
-          └─► emite 'login-success' con secretPhrase
-  └─► LoginView.vue  (recibe el evento, usa router.push a /secret)
-  └─► SecretView.vue  (lee phrase del query, protege acceso sin login)
-          └─► SecretDisplay.vue  (muestra la frase, emite 'logout')
+          └─► router.push('/dashboard') en éxito
+  └─► DashboardView.vue  (panel principal; logout limpia JWT y vuelve a /)
 ```
 
 ---
@@ -66,7 +64,7 @@ Usuario
 - JavaScript (ES Modules)  
 
 **Flujo de datos:**  
-Usuario → LoginForm.vue → authService.js → Backend → LoginView.vue → SecretView.vue → SecretDisplay.vue  
+Usuario → LoginView.vue → authService.ts → Backend → DashboardView.vue  
 
 ---
 

@@ -15,22 +15,29 @@ com.novafacts.backend
 │
 ├── BackendApplication.java          ← Punto de entrada Spring Boot
 ├── config/
-│   └── SecurityConfig.java          ← Configuración de seguridad (BCrypt, CSRF, filtros)
+│   └── SecurityConfig.java          ← Seguridad: JWT filter, CORS, BCrypt, STATELESS
+├── common/
+│   └── GlobalExceptionHandler.java  ← @RestControllerAdvice: manejo centralizado de errores
 │
 └── auth/
     ├── controller/
     │   ├── AuthController.java       ← POST /api/auth/login
-    │   └── UserController.java       ← POST /api/users  |  GET /api/users
+    │   └── UserController.java       ← POST /api/users (201) | GET /api/users | DELETE /{id} (204)
+    ├── filter/
+    │   └── JwtAuthenticationFilter.java ← Valida Bearer token en cada petición
+    ├── jwt/
+    │   └── JwtService.java           ← Genera y valida JWT
     ├── service/
-    │   └── UserService.java          ← Lógica de negocio: crear usuario, login, listar
+    │   ├── UserService.java          ← Lógica de negocio: crear usuario, login, listar
+    │   └── UserDetailsServiceImpl.java ← Spring Security UserDetailsService
     ├── repository/
-    │   └── UserRepository.java       ← Acceso a datos (JpaRepository + findByUsername)
+    │   └── UserRepository.java       ← JpaRepository + findByUsername
     ├── entity/
-    │   └── User.java                 ← Entidad JPA mapeada a la tabla `users`
+    │   └── User.java                 ← Entidad JPA mapeada a la tabla `usuario`
     └── dto/
-        ├── CreateUserRequest.java
+        ├── CreateUserRequest.java    ← @NotBlank @Email @Size
         ├── UserResponse.java
-        ├── LoginRequest.java
+        ├── LoginRequest.java         ← @NotBlank
         └── LoginResponse.java
 ```
 
